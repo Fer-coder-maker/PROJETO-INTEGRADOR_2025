@@ -112,7 +112,7 @@ Ele contém:
 ```python
 criar_perfil("Carla Nogueira", "carla@gmail.com", "senha123")
 
-
+```
 
 🎨 Protótipo e Evolução do Projeto
 🖼 Primeiro Protótipo no Figma
