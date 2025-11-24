@@ -1,199 +1,192 @@
 import mysql.connector
-from mysql.connector import Error
 
-# --------------------------------------------------------
-# 1. Função de conexão
-# --------------------------------------------------------
+# ---------------------------
+# CONEXÃO COM O BANCO
+# ---------------------------
 def conectar():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="SUA_SENHA",
-            database="planejaai"
-        )
-        return conn
-    except Error as e:
-        print("Erro ao conectar:", e)
-        return None
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="SUA_SENHA",
+        database="planejaai"
+    )
 
+# ===========================
+# CRUD – TABELA PERFIL
+# ===========================
+def criar_perfil(nome, email, senha):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO perfil (nome, email, senha)
+        VALUES (%s, %s, %s)
+    """, (nome, email, senha))
+    conn.commit()
+    conn.close()
 
-# --------------------------------------------------------
-# 2. Criar banco (se não existir)
-# --------------------------------------------------------
-def criar_banco():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="SUA_SENHA"
-        )
-        cursor = conn.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS planejaai")
-        print("Banco criado/verificado com sucesso.")
-        cursor.close()
-        conn.close()
-    except Error as e:
-        print("Erro:", e)
+def listar_perfis():
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM perfil")
+    perfis = cursor.fetchall()
+    conn.close()
+    return perfis
 
-
-# --------------------------------------------------------
-# 3. Criar tabelas do modelo físico
-# --------------------------------------------------------
-def criar_tabelas():
+def atualizar_perfil(id_usuario, nome=None, email=None, senha=None):
     conn = conectar()
     cursor = conn.cursor()
 
-    tabelas = [
-        """
-        CREATE TABLE IF NOT EXISTS eventos (
-            id_evento INT AUTO_INCREMENT PRIMARY KEY,
-            nome_evento VARCHAR(255) NOT NULL,
-            data_evento DATE,
-            local_evento VARCHAR(255),
-            orcamento_total DECIMAL(10,2) DEFAULT 0
-        )
-        """,
-
-        """
-        CREATE TABLE IF NOT EXISTS convidados (
-            id_convidado INT AUTO_INCREMENT PRIMARY KEY,
-            id_evento INT NOT NULL,
-            nome_convidado VARCHAR(255) NOT NULL,
-            telefone VARCHAR(20),
-            email VARCHAR(255),
-            status_presenca VARCHAR(50) DEFAULT 'Pendente',
-            FOREIGN KEY (id_evento) REFERENCES eventos(id_evento)
-        )
-        """,
-
-        """
-        CREATE TABLE IF NOT EXISTS fornecedores (
-            id_fornecedor INT AUTO_INCREMENT PRIMARY KEY,
-            nome_fornecedor VARCHAR(255) NOT NULL,
-            categoria VARCHAR(100),
-            telefone VARCHAR(20),
-            email VARCHAR(255),
-            preco_estimado DECIMAL(10,2)
-        )
-        """,
-
-        """
-        CREATE TABLE IF NOT EXISTS evento_fornecedores (
-            id_evento INT NOT NULL,
-            id_fornecedor INT NOT NULL,
-            papel VARCHAR(255),
-            PRIMARY KEY (id_evento, id_fornecedor),
-            FOREIGN KEY (id_evento) REFERENCES eventos(id_evento),
-            FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id_fornecedor)
-        )
-        """
-    ]
-
-    for tabela in tabelas:
-        cursor.execute(tabela)
+    cursor.execute("""
+        UPDATE perfil
+        SET nome = COALESCE(%s, nome),
+            email = COALESCE(%s, email),
+            senha = COALESCE(%s, senha)
+        WHERE id_usuario = %s
+    """, (nome, email, senha, id_usuario))
 
     conn.commit()
-    cursor.close()
     conn.close()
-    print("Tabelas criadas com sucesso!")
 
-
-# --------------------------------------------------------
-# 4. Funções CRUD (exemplos)
-# --------------------------------------------------------
-def inserir_evento(nome, data, local, orcamento):
+def deletar_perfil(id_usuario):
     conn = conectar()
     cursor = conn.cursor()
-    sql = """
-        INSERT INTO eventos (nome_evento, data_evento, local_evento, orcamento_total)
+    cursor.execute("DELETE FROM perfil WHERE id_usuario = %s", (id_usuario,))
+    conn.commit()
+    conn.close()
+
+
+# ===========================
+# CRUD – TABELA EVENTOS
+# ===========================
+def criar_evento(nome_evento, data_evento, local_evento, id_usuario):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO eventos (nome_evento, data_evento, local_evento, id_usuario)
         VALUES (%s, %s, %s, %s)
-    """
-    cursor.execute(sql, (nome, data, local, orcamento))
+    """, (nome_evento, data_evento, local_evento, id_usuario))
     conn.commit()
-    print("Evento inserido com sucesso!")
-    cursor.close()
     conn.close()
-
 
 def listar_eventos():
     conn = conectar()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM eventos")
     eventos = cursor.fetchall()
-    cursor.close()
     conn.close()
     return eventos
 
-
-def atualizar_orcamento(id_evento, novo_valor):
+def atualizar_evento(id_evento, nome=None, data=None, local=None):
     conn = conectar()
     cursor = conn.cursor()
-    sql = "UPDATE eventos SET orcamento_total = %s WHERE id_evento = %s"
-    cursor.execute(sql, (novo_valor, id_evento))
+    cursor.execute("""
+        UPDATE eventos
+        SET nome_evento = COALESCE(%s, nome_evento),
+            data_evento = COALESCE(%s, data_evento),
+            local_evento = COALESCE(%s, local_evento)
+        WHERE id_evento = %s
+    """, (nome, data, local, id_evento))
     conn.commit()
-    cursor.close()
     conn.close()
-    print("Orçamento atualizado!")
-
 
 def deletar_evento(id_evento):
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM eventos WHERE id_evento = %s", (id_evento,))
     conn.commit()
-    cursor.close()
     conn.close()
-    print("Evento deletado com sucesso!")
 
 
-# --------------------------------------------------------
-# 5. Informações do sistema (versão, tabelas, colunas)
-# --------------------------------------------------------
-def mostrar_versao():
+# ===========================
+# CRUD – TABELA CONVIDADOS
+# ===========================
+def criar_convidado(id_evento, nome, telefone, email, status="Pendente"):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("SELECT VERSION()")
-    versao = cursor.fetchone()[0]
-    cursor.close()
+    cursor.execute("""
+        INSERT INTO convidados (id_evento, nome_convidado, telefone, email, status_presenca)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (id_evento, nome, telefone, email, status))
+    conn.commit()
     conn.close()
-    print("Versão do MySQL:", versao)
 
+def listar_convidados(id_evento=None):
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
 
-def listar_tabelas():
+    if id_evento:
+        cursor.execute("SELECT * FROM convidados WHERE id_evento = %s", (id_evento,))
+    else:
+        cursor.execute("SELECT * FROM convidados")
+
+    convidados = cursor.fetchall()
+    conn.close()
+    return convidados
+
+def atualizar_convidado(id_convidado, nome=None, telefone=None, email=None, status=None):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("SHOW TABLES")
-    tabelas = cursor.fetchall()
-    cursor.close()
+    cursor.execute("""
+        UPDATE convidados
+        SET nome_convidado = COALESCE(%s, nome_convidado),
+            telefone = COALESCE(%s, telefone),
+            email = COALESCE(%s, email),
+            status_presenca = COALESCE(%s, status_presenca)
+        WHERE id_convidado = %s
+    """, (nome, telefone, email, status, id_convidado))
+    conn.commit()
     conn.close()
-    print("Tabelas no banco:")
-    for t in tabelas:
-        print("-", t[0])
 
-
-def estrutura_tabela(nome_tabela):
+def deletar_convidado(id_convidado):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute(f"DESCRIBE {nome_tabela}")
-    colunas = cursor.fetchall()
-    cursor.close()
+    cursor.execute("DELETE FROM convidados WHERE id_convidado = %s", (id_convidado,))
+    conn.commit()
     conn.close()
-    print(f"Estrutura da tabela {nome_tabela}:")
-    for c in colunas:
-        print(c)
 
 
-# --------------------------------------------------------
-# 6. Execução principal
-# --------------------------------------------------------
-if __name__ == "__main__":
-    criar_banco()
-    criar_tabelas()
-    mostrar_versao()
-    listar_tabelas()
-    estrutura_tabela("eventos")
+# ===========================
+# CRUD – TABELA ORÇAMENTO
+# ===========================
+def criar_orcamento(id_evento, categoria, valor_estimado, observacoes=None):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO orcamento (id_evento, categoria, valor_estimado, observacoes)
+        VALUES (%s, %s, %s, %s)
+    """, (id_evento, categoria, valor_estimado, observacoes))
+    conn.commit()
+    conn.close()
 
-    # Exemplos
-    inserir_evento("Festa Teste", "2025-08-10", "Salão Azul", 1500)
-    print(listar_eventos())
+def listar_orcamentos(id_evento=None):
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    if id_evento:
+        cursor.execute("SELECT * FROM orcamento WHERE id_evento = %s", (id_evento,))
+    else:
+        cursor.execute("SELECT * FROM orcamento")
+
+    orc = cursor.fetchall()
+    conn.close()
+    return orc
+
+def atualizar_orcamento(id_orcamento, categoria=None, valor=None, obs=None):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE orcamento
+        SET categoria = COALESCE(%s, categoria),
+            valor_estimado = COALESCE(%s, valor_estimado),
+            observacoes = COALESCE(%s, observacoes)
+        WHERE id_orcamento = %s
+    """, (categoria, valor, obs, id_orcamento))
+    conn.commit()
+    conn.close()
+
+def deletar_orcamento(id_orcamento):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM orcamento WHERE id_orcamento = %s", (id_orcamento,))
+    conn.commit()
+    conn.close()
