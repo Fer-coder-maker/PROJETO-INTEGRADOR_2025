@@ -1,4 +1,4 @@
-# 📱 MVP – App de Gestão de Eventos, Convidados e Fornecedores
+# 📱 MVP – App de Gestão de Eventos, Convidados e Fornecedores - PlanejaAí
 
 Este repositório contém o MVP de um sistema de gerenciamento de eventos
 projetado para testes e validação com usuários reais.
