@@ -113,7 +113,6 @@ Ele contém:
 criar_perfil("Carla Nogueira", "carla@gmail.com", "senha123")
 
 
----
 
 🎨 Protótipo e Evolução do Projeto
 🖼 Primeiro Protótipo no Figma
@@ -136,7 +135,8 @@ Primeiras ideias de usabilidade
 
 Ele representou a visão inicial do Planejaaí antes da implementação técnica.
 
-🔗 [Acesse o Protótipo no Figma](https://www.figma.com/proto/0GxTuWj14m4BvQ4K73J4Ub/PI-SENAC?node-id=5-707&p=f&t=7Qu2G4Sl7hA2GUdv-1&scaling=contain&content-scaling=fixed&page-id=0%3A1)
+👉 [Acessar o protótipo no Figma](https://www.figma.com/proto/0GxTuWj14m4BvQ4K73J4Ub/PI-SENAC?node-id=5-707&p=f&t=7Qu2G4Sl7hA2GUdv-1&scaling=contain&content-scaling=fixed&page-id=0%3A1)
+
 
 
 
@@ -157,16 +157,8 @@ Essa evolução transformou o design inicial em um aplicativo funcional, resulta
 
 
 
-
 ### 🎥 Vídeo de Apresentação do MVP
-
-Confira a demonstração visual do aplicativo Planejaaí, mostrando a navegação, telas principais e funcionalidades do MVP:
 
 👉 [Clique aqui para assistir no YouTube](https://www.youtube.com/shorts/jJLv3k5cb4g)
 
-#### 📌 Thumbnail (YouTube Shorts)
-*(O YouTube não fornece thumbnails padrão para Shorts como faz para vídeos tradicionais)*  
-Usei o formato alternativo abaixo:
-
-[![Assista ao vídeo](https://i.ytimg.com/vi/jJLv3k5cb4g/maxresdefault.jpg)](https://www.youtube.com/shorts/jJLv3k5cb4g)
 
