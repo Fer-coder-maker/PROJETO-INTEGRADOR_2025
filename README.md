@@ -111,3 +111,62 @@ Ele contém:
 #### ➤ Criar usuário
 ```python
 criar_perfil("Carla Nogueira", "carla@gmail.com", "senha123")
+
+
+---
+
+🎨 Protótipo e Evolução do Projeto
+🖼 Primeiro Protótipo no Figma
+
+O projeto começou com um protótipo inicial criado no Figma, focado em:
+
+Estrutura visual das telas
+
+Organização da navegação
+
+Definição da identidade do aplicativo
+
+Esse protótipo serviu como base para validar:
+
+Fluxos iniciais
+
+Posições de elementos
+
+Primeiras ideias de usabilidade
+
+Ele representou a visão inicial do Planejaaí antes da implementação técnica.
+
+🔗 [Acesse o Protótipo no Figma](https://www.figma.com/proto/0GxTuWj14m4BvQ4K73J4Ub/PI-SENAC?node-id=5-707&p=f&t=7Qu2G4Sl7hA2GUdv-1&scaling=contain&content-scaling=fixed&page-id=0%3A1)
+
+
+
+📲 Adaptação e Evolução para o App Final
+
+Após a validação do protótipo, o layout foi adaptado e evoluído para o ambiente do Glide, considerando:
+
+✔ Necessidades reais surgidas no processo de desenvolvimento
+
+✔ Simplificação dos fluxos de cadastro (eventos, convidados e orçamento)
+
+✔ Integração entre telas e experiências
+
+✔ Limitações e possibilidades da plataforma Glide
+
+Essa evolução transformou o design inicial em um aplicativo funcional, resultando em um MVP sólido, focado na entrega prática das funcionalidades essenciais.
+
+
+
+
+
+### 🎥 Vídeo de Apresentação do MVP
+
+Confira a demonstração visual do aplicativo Planejaaí, mostrando a navegação, telas principais e funcionalidades do MVP:
+
+👉 [Clique aqui para assistir no YouTube](https://www.youtube.com/shorts/jJLv3k5cb4g)
+
+#### 📌 Thumbnail (YouTube Shorts)
+*(O YouTube não fornece thumbnails padrão para Shorts como faz para vídeos tradicionais)*  
+Usei o formato alternativo abaixo:
+
+[![Assista ao vídeo](https://i.ytimg.com/vi/jJLv3k5cb4g/maxresdefault.jpg)](https://www.youtube.com/shorts/jJLv3k5cb4g)
+
